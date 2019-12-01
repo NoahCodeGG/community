@@ -12,4 +12,6 @@
 ## 相关技术
 * Git
 * Spring Boot
+* Mybatis
+* h2
 * ...

@@ -1,7 +1,7 @@
 package cn.noahcode.community.provider;
 
-import cn.noahcode.community.dto.AccessTokenDTO;
 import cn.noahcode.community.dto.GithubUser;
+import cn.noahcode.community.dto.AccessTokenDTO;
 import com.alibaba.fastjson.JSON;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
