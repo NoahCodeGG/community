@@ -1,0 +1,15 @@
+body {
+    margin: 0;
+    height: 100%;
+    background: url("../images/bk.png") repeat;
+}
+.main {
+    margin: 30px;
+    background:white;
+    border: 1px solid #e6e6e6;
+    border-radius: 4px;
+}
+.btn-publish {
+    float: right;
+    margin-bottom: 15px;
+}

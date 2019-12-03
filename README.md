@@ -15,3 +15,23 @@
 * Mybatis
 * h2
 * ...
+
+## Bash
+#### Git
+* 上传所有文件到暂存区
+```
+git add *
+```
+* 提交暂存区的文件到本地版本库,并且附上提交信息
+```
+git commit -m "提交信息"
+```
+* 将本地版本库推送到远程服务器
+```
+git push
+```
+
+#### Flyway
+```
+mvn flyway:migration
+```
