@@ -6,14 +6,15 @@
 ## 相关工具
 * IDEA
 * Git
-* Visual Paradigm
 * ...
     
 ## 相关技术
 * Git
 * Spring Boot
+* Thymeleaf
 * Mybatis
 * h2
+* Lombok
 * ...
 
 ## Bash

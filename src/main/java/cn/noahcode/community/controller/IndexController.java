@@ -1,13 +1,13 @@
 package cn.noahcode.community.controller;
 
-import cn.noahcode.community.mapper.UserMapper;
-import cn.noahcode.community.model.User;
-import jdk.nashorn.internal.parser.Token;
+import cn.noahcode.community.dto.PaginationDOT;
+import cn.noahcode.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -17,24 +17,17 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class IndexController {
+
     @Autowired
-    private UserMapper userMapper;
+    private QuestionService questionService;
 
     @RequestMapping("/")
-    public String index(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if(cookies != null){
-            for (Cookie cookie : cookies) {
-                if(cookie.getName().equals("token")){
-                    String token = cookie.getValue();
-                    User user = userMapper.findByToken(token);
-                    if(user != null){
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
-        }
+    public String index(HttpServletRequest request,
+                        Model model,
+                        @RequestParam(name = "page", defaultValue = "1") Integer page,
+                        @RequestParam(name = "size", defaultValue = "5") Integer size) {
+        PaginationDOT pagination = questionService.list(page, size);
+        model.addAttribute("pagination", pagination);
         return "index";
     }
 }
