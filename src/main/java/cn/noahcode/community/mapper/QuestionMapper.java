@@ -1,11 +1,7 @@
 package cn.noahcode.community.mapper;
 
-import cn.noahcode.community.dto.QuestionDTO;
 import cn.noahcode.community.model.Question;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -28,13 +24,16 @@ public interface QuestionMapper {
     @Select("select count(1) from QUESTION")
     Integer count();
 
-    @Select("select * from QUESTION where creator = #{accountId} limit #{offset}, #{size}")
-    List<Question> listByAccountId(@Param(value = "accountId") Integer accountId, @Param(value = "offset") Integer offset,
-                                   @Param(value = "size") Integer size);
+    @Select("select * from QUESTION where creator = #{id} limit #{offset}, #{size}")
+    List<Question> listById(@Param(value = "id") String id, @Param(value = "offset") Integer offset,
+                            @Param(value = "size") Integer size);
 
-    @Select("select count(1) from QUESTION where creator = #{accountId}")
-    Integer countByAccountId(@Param(value = "accountId") Integer accountId);
+    @Select("select count(1) from QUESTION where creator = #{id}")
+    Integer countById(@Param(value = "id") String id);
 
     @Select("select * from QUESTION where id = #{id}")
     Question getById(@Param("id") Integer id);
+
+    @Update("update QUESTION set TITLE = #{title},DESCRIPTION = #{description},TAG = #{tag},GMT_MODIFIED = #{gmtModified} where ID = #{id}")
+    void update(Question question);
 }

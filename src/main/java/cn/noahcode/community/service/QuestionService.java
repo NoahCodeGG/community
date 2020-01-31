@@ -41,7 +41,7 @@ public class QuestionService {
         List<Question> questions = questionMapper.list(offset, size);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
-            User user = userMapper.findByAccountId(question.getCreator());
+            User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
             questionDTO.setUser(user);
@@ -51,9 +51,9 @@ public class QuestionService {
         return paginationDOT;
     }
 
-    public PaginationDOT list(Integer accountId, Integer page, Integer size) {
+    public PaginationDOT list(String id, Integer page, Integer size) {
         PaginationDOT paginationDOT = new PaginationDOT();
-        Integer totalCount = questionMapper.countByAccountId(accountId);
+        Integer totalCount = questionMapper.countById(id);
         paginationDOT.setPagination(totalCount, page, size);
         if (page < 1) {
             page = 1;
@@ -62,10 +62,10 @@ public class QuestionService {
             page = paginationDOT.getTotalPage();
         }
         Integer offset = size * (page - 1);
-        List<Question> questions = questionMapper.listByAccountId(accountId, offset, size);
+        List<Question> questions = questionMapper.listById(id, offset, size);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
-            User user = userMapper.findByAccountId(question.getCreator());
+            User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
             questionDTO.setUser(user);
@@ -79,8 +79,22 @@ public class QuestionService {
         Question question = questionMapper.getById(id);
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
-        User user = userMapper.findByAccountId(question.getCreator());
+        User user = userMapper.findById(question.getCreator());
         questionDTO.setUser(user);
         return questionDTO;
+    }
+
+    public void createOrUpdate(Question question) {
+        System.out.println(question.getId());
+        if (question.getId() == null) {
+            //插入
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.create(question);
+        } else {
+            //更新
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.update(question);
+        }
     }
 }

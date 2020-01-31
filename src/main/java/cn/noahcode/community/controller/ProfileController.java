@@ -44,7 +44,7 @@ public class ProfileController {
             model.addAttribute("section", "replies");
             model.addAttribute("sectionName", "最新回复");
         }
-        PaginationDOT paginationDOT = questionService.list(Integer.valueOf(user.getAccountId()), page, size);
+        PaginationDOT paginationDOT = questionService.list(user.getId(), page, size);
         model.addAttribute("pagination", paginationDOT);
         return "profile";
     }
