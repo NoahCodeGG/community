@@ -36,3 +36,8 @@ git push
 ```
 mvn flyway:migration
 ```
+
+#### Mybatis Generator
+```
+mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
+```
