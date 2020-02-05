@@ -2,6 +2,9 @@ package cn.noahcode.community.service;
 
 import cn.noahcode.community.dto.PaginationDOT;
 import cn.noahcode.community.dto.QuestionDTO;
+import cn.noahcode.community.exception.CustomizeErrorCode;
+import cn.noahcode.community.exception.CustomizeException;
+import cn.noahcode.community.mapper.QuestionExtMapper;
 import cn.noahcode.community.mapper.QuestionMapper;
 import cn.noahcode.community.mapper.UserMapper;
 import cn.noahcode.community.model.Question;
@@ -24,10 +27,14 @@ import java.util.List;
 public class QuestionService {
 
     @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
     private QuestionMapper questionMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    private QuestionExtMapper questionExtMapper;
+
 
     public PaginationDOT list(Integer page, Integer size) {
         PaginationDOT paginationDOT = new PaginationDOT();
@@ -53,7 +60,7 @@ public class QuestionService {
         return paginationDOT;
     }
 
-    public PaginationDOT list(Integer userId, Integer page, Integer size) {
+    public PaginationDOT list(Long userId, Integer page, Integer size) {
         PaginationDOT paginationDOT = new PaginationDOT();
         QuestionExample questionExample = new QuestionExample();
         questionExample.createCriteria()
@@ -69,7 +76,7 @@ public class QuestionService {
         Integer offset = size * (page - 1);
         QuestionExample example = new QuestionExample();
         example.createCriteria()
-                .andIdEqualTo(userId);
+                .andCreatorEqualTo(userId);
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
@@ -83,8 +90,11 @@ public class QuestionService {
         return paginationDOT;
     }
 
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null) {
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
         User user = userMapper.selectByPrimaryKey(question.getCreator());
@@ -108,7 +118,17 @@ public class QuestionService {
             QuestionExample questionExample = new QuestionExample();
             questionExample.createCriteria()
                     .andIdEqualTo(question.getId());
-            questionMapper.updateByExampleSelective(updateQuestion, questionExample);
+            int updated = questionMapper.updateByExampleSelective(updateQuestion, questionExample);
+            if (updated != 1) {
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
+    }
+
+    public void incView(Long id) {
+        Question question = new Question();
+        question.setId(id);
+        question.setViewCount(1);
+        questionExtMapper.incView(question);
     }
 }

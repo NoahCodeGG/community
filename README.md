@@ -35,6 +35,7 @@ git push
 #### Flyway
 ```
 mvn flyway:migration
+mvn compile flyway:migrate
 ```
 
 #### Mybatis Generator
