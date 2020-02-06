@@ -1,7 +1,9 @@
 package cn.noahcode.community.controller;
 
 import cn.noahcode.community.dto.CommentCreateDTO;
+import cn.noahcode.community.dto.CommentDTO;
 import cn.noahcode.community.dto.ResultDTO;
+import cn.noahcode.community.enums.CommentTypeEnum;
 import cn.noahcode.community.exception.CustomizeErrorCode;
 import cn.noahcode.community.model.Comment;
 import cn.noahcode.community.model.User;
@@ -9,12 +11,10 @@ import cn.noahcode.community.service.CommentService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author NoahCode
@@ -47,4 +47,12 @@ public class CommentController {
         commentService.insert(comment);
         return ResultDTO.okOf();
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/comment/{id}", method = RequestMethod.GET)
+    public ResultDTO comments(@PathVariable(name = "id") Long id){
+        List<CommentDTO> commentDTOS = commentService.listByQuestionId(id, CommentTypeEnum.COMMENT);
+        return ResultDTO.okOf(commentDTOS);
+    }
+
 }

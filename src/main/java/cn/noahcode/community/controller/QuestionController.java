@@ -2,6 +2,7 @@ package cn.noahcode.community.controller;
 
 import cn.noahcode.community.dto.CommentDTO;
 import cn.noahcode.community.dto.QuestionDTO;
+import cn.noahcode.community.enums.CommentTypeEnum;
 import cn.noahcode.community.service.CommentService;
 import cn.noahcode.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class QuestionController {
     public String question(@PathVariable(name = "id") Long id,
                            Model model) {
         QuestionDTO questionDTO = questionService.getById(id);
-        List<CommentDTO> comments = commentService.listByQuestionId(id);
+        List<CommentDTO> comments = commentService.listByQuestionId(id, CommentTypeEnum.QUESTION);
         questionService.incView(id);
         model.addAttribute("question", questionDTO);
         model.addAttribute("comments", comments);

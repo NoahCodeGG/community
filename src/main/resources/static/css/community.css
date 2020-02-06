@@ -52,12 +52,23 @@ body {
     float: right;
 }
 
+.sub-comment {
+    border-radius: 5px;
+    margin-top: 10px;
+    border: 1px solid #eee;
+    padding-top: 15px;
+}
+
 .comment-username {
     padding-top: 20px;
 }
 
 .comment_section {
     margin: 10px;
+}
+
+.sub-comment .btn {
+    margin: 10px 0;
 }
 
 .tool {
@@ -73,6 +84,10 @@ body {
     margin-right: 6px;
     font-size: 15px;
     cursor: pointer;
+}
+
+.menu .active {
+    color: #499ef3;
 }
 
 .menu .icon:hover {
