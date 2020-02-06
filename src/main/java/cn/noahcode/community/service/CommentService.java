@@ -1,15 +1,24 @@
 package cn.noahcode.community.service;
 
+import cn.noahcode.community.dto.CommentDTO;
 import cn.noahcode.community.enums.CommentTypeEnum;
 import cn.noahcode.community.exception.CustomizeErrorCode;
 import cn.noahcode.community.exception.CustomizeException;
 import cn.noahcode.community.mapper.CommentMapper;
 import cn.noahcode.community.mapper.QuestionExtMapper;
 import cn.noahcode.community.mapper.QuestionMapper;
-import cn.noahcode.community.model.Comment;
-import cn.noahcode.community.model.Question;
+import cn.noahcode.community.mapper.UserMapper;
+import cn.noahcode.community.model.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author NoahCode
@@ -20,6 +29,8 @@ import org.springframework.stereotype.Service;
 public class CommentService {
 
     @Autowired
+    private UserMapper userMapper;
+    @Autowired
     private CommentMapper commentMapper;
 
     @Autowired
@@ -28,6 +39,7 @@ public class CommentService {
     @Autowired
     private QuestionExtMapper questionExtMapper;
 
+    @Transactional
     public void insert(Comment comment) {
         if (comment.getParentId() == null || comment.getParentId() == 0) {
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOT_FOUND);
@@ -51,5 +63,35 @@ public class CommentService {
             }
         }
         commentMapper.insertSelective(comment);
+    }
+
+    public List<CommentDTO> listByQuestionId(Long id) {
+        CommentExample commentExample = new CommentExample();
+        commentExample.createCriteria()
+                .andParentIdEqualTo(id)
+                .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+        commentExample.setOrderByClause("gmt_create desc");
+        List<Comment> comments = commentMapper.selectByExample(commentExample);
+        if (comments.size() == 0) {
+            return new ArrayList<>();
+        }
+        //获取去重的评论人
+        Set<Long> commentators = comments.stream().map(comment -> comment.getCommentator()).collect(Collectors.toSet());
+        List<Long> userIds = new ArrayList<>();
+        userIds.addAll(commentators);
+        //获取评论人并转换成 Map
+        UserExample userExample = new UserExample();
+        userExample.createCriteria()
+                .andIdIn(userIds);
+        List<User> users = userMapper.selectByExample(userExample);
+        Map<Long, User> userMap = users.stream().collect(Collectors.toMap(user -> user.getId(), user -> user));
+        //转换 comment 为 commentDTO
+        List<CommentDTO> commentDTOs = comments.stream().map(comment -> {
+            CommentDTO commentDTO = new CommentDTO();
+            BeanUtils.copyProperties(comment, commentDTO);
+            commentDTO.setUser(userMap.get(comment.getCommentator()));
+            return commentDTO;
+        }).collect(Collectors.toList());
+        return commentDTOs;
     }
 }

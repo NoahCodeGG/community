@@ -17,7 +17,9 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     //类型错误
     TYPE_PARAM_WRONG(2005, "The comment's type is wrong or not exist !"),
     //回复丢失
-    COMMENT_NOT_FOUND(2006, "The comment is not found , you can try other please !");
+    COMMENT_NOT_FOUND(2006, "The comment is not found , you can try other please !"),
+    //回复内容为空
+    CONTENT_IS_EMPTY(2007, "The input content cannot be empty , please enter the content before submitting !");
 
 
     private Integer code;

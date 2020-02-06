@@ -39,6 +39,42 @@ body {
     color: #999;
 }
 
-.jumbotron{
+.jumbotron {
     background: white;
+}
+
+.comment {
+    margin: 10px 0;
+}
+
+.btn-comment {
+    margin-bottom: 10px;
+    float: right;
+}
+
+.comment-username {
+    padding-top: 20px;
+}
+
+.comment_section {
+    margin: 10px;
+}
+
+.tool {
+    margin-left: 10px;
+}
+
+.menu {
+    color: #999;
+    margin-top: 5px;
+}
+
+.menu .icon {
+    margin-right: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.menu .icon:hover {
+    color: #499ef3;
 }
